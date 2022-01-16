@@ -1,16 +1,43 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import openpyxl as xl
+import pathlib
+from openpyxl.chart import BarChart,Reference
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+#input file name with  extension
+def process_work_book(filename):
+    try:
+        current_path = pathlib.Path().resolve()
+        work_book = xl.load_workbook(f"{current_path}/ExcelFile/{filename}")
+        sheet = work_book['Sheet1']
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
+        #Loop through rows
+        #include only rows with actual data and not headings
+        for row in range(2,sheet.max_row + 1):
+            #10% reduction of price in colum 3
+            corrected_price = sheet.cell(row,3).value * 0.9
+            corrected_price_cell = sheet.cell(row,4)
+            corrected_price_cell.value = corrected_price
+
+        #Refrence class used to select a range of values for chart
+        values = Reference(sheet,min_row=2,max_row=sheet.max_row,min_col=4,max_col=4)
+
+        #Bar Chart
+        chart = BarChart()
+        chart.add_data(values)
+        sheet.add_chart(chart,'a6')
+        #save files in saved file folder
+        work_book.save(f'{current_path}/ExcelFile/savedFiles/{filename}')
+        print("File saved...")
+    except FileNotFoundError:
+        print("No Such File Exist in directory..")
+    except Exception as e:
+        print(e)
+
+
+
+
+#Main Body
+print("Note: Place the File you wanted to Process in ExcelFile Folder. The Saved Result will be in SavedFiles Folder with the same name")
+process_work_book(input("Enter Filename (include Extension): "))
