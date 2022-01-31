@@ -7,7 +7,7 @@ from openpyxl.chart import BarChart,Reference
 def process_work_book(filename):
     try:
         current_path = pathlib.Path().resolve()
-        work_book = xl.load_workbook(f"{current_path}/ExcelFile/{filename}")
+        work_book = xl.load_workbook(f"{current_path}\ExcelFile\{filename}")
         sheet = work_book['Sheet1']
 
 
@@ -28,15 +28,12 @@ def process_work_book(filename):
         chart.add_data(values)
         sheet.add_chart(chart,'a6')
         #save files in saved file folder
-        work_book.save(f'{current_path}/ExcelFile/savedFiles/{filename}')
+        work_book.save(f'{current_path}\ExcelFile\savedFiles\{filename}')
         print("File saved...")
     except FileNotFoundError:
         print("No Such File Exist in directory..")
     except Exception as e:
         print(e)
-
-
-
 
 #Main Body
 print("Note: Place the File you wanted to Process in ExcelFile Folder. The Saved Result will be in SavedFiles Folder with the same name")
